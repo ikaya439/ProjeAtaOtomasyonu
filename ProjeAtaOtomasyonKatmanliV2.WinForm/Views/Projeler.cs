@@ -130,8 +130,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                     new ProjeSahiplikDAOBase().Save(pSEntity);
                     MessageBox.Show("Başarılı");
                 }
-                catch (Exception)
+                catch (Exception e1)
                 {
+                    MessageBox.Show("HATA");
                 }
             }
         }

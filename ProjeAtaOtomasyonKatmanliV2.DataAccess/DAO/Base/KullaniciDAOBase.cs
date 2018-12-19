@@ -22,7 +22,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
 
         protected override IDbCommand CreateDeleteOneCommand(int ID)
         {
-            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [ID]=@ID");
+            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [Id]=@ID");
             CreateIdentityParameter(cmd, ID);
             return cmd;
         }
@@ -38,13 +38,15 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
             IDbCommand cmd = this.CreateCommand("INSERT INTO [dbo].[Kullanici] ([Adi],[SoyAdi],[Email]"+
                 ",[Sifre],[Tel],[AdminStajyer],[Active],[InsDate])VALUES (@Adi,@SoyAdi,@Email,@Tel,@Sifre"+
                 ",@AdminStajyer,@Active,@InsDate)");
+
+
             CreateValueParameters(cmd, o);
             return cmd;
         }
 
         protected override IDbCommand CreateSelectOneCommand(int ID)
         {
-            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [ID]=@ID");
+            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [Id]=@ID");
             CreateIdentityParameter(cmd, ID);
             return cmd;
         }

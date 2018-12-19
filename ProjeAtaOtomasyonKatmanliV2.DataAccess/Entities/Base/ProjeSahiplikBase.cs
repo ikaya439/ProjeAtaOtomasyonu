@@ -9,6 +9,10 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.Entities.Base
     [Serializable]
     public class ProjeSahiplikBase
     {
+        public ProjeSahiplikBase()
+        {
+            _approveDate = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+        }
         private int _id;
 
         public int Id
@@ -39,6 +43,13 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.Entities.Base
             get { return _stajyerId; }
             set { _stajyerId = value; }
         }
+        private DateTime _insDate;
+
+        public DateTime InsDate
+        {
+            get { return _insDate; }
+            set { _insDate = value; }
+        }
         private DateTime _endDate;
 
         public DateTime EndDate
@@ -61,13 +72,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.Entities.Base
             set { _active = value; }
         }
 
-        private DateTime _insDate;
 
-        public DateTime InsDate
-        {
-            get { return _insDate; }
-            set { _insDate = value; }
-        }
 
     }
 }

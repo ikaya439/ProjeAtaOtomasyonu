@@ -91,9 +91,12 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm
             gridToEntity();
             try
             {
-                kDAO.Delete(Entity);
-                MessageBox.Show("Silindi");
-                gridDoldur();
+                if (DialogResult.Yes == MessageBox.Show("Silinsin mi?", "Uyarı!", MessageBoxButtons.YesNo))
+                {
+                    kDAO.Delete(Entity);
+                    MessageBox.Show("Silindi");
+                    gridDoldur();
+                }
             }
             catch (Exception)
             {

@@ -11,7 +11,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
 {
     public class ProjeSahiplikDAOBase : CompactDAOBase<ProjeSahiplik, int>
     {
-            
+
         public ProjeSahiplikDAOBase()
             : base(DbConstants.DatabaseProviderType, DbConstants.DatabaseType, "ProjeSahiplik", DbConstants.ConnectionString)
         {
@@ -35,16 +35,16 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
         protected override IDbCommand CreateInsertCommand(ProjeSahiplik o)
         {
             ProjeSahiplik entity = o;
-            IDbCommand cmd = this.CreateCommand("INSERT INTO [dbo].[ProjeSahiplik]([ProjeId],[StajyerId],[EndDate]" +
-                ",[Active],[InsDate]) VALUES(@ProjeId,@StajyerId, @EndDate,@Active,@InsDate)");
+            IDbCommand cmd = this.CreateCommand("INSERT INTO [dbo].[ProjeSahiplik]([ProjeId],[StajyerId],[InsDate]" +
+                ",[EndDate],[ApproveDate],[Versiyon],[Active]) VALUES(@ProjeId,@StajyerId,@InsDate, @EndDate,@ApproveDate,@Versiyon,@Active)");
             CreateValueParameters(cmd, o);
             return cmd;
         }
 
         protected override IDbCommand CreateSelectOneCommand(int ID)
         {
-            IDbCommand cmd = this.CreateCommand("SELECT * FROM [ProjeSahiplik] "+
-                "WHERE [ID]=@ID");
+            IDbCommand cmd = this.CreateCommand("SELECT * FROM [ProjeSahiplik] " +
+                "WHERE [ID]=@ID ");
             CreateIdentityParameter(cmd, ID);
             return cmd;
         }
@@ -53,18 +53,19 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
         {
             ProjeSahiplik entity = o;
             string set = "";
-           string update = " UPDATE [dbo].[ProjeSahiplik] ";
+            string update = " UPDATE [dbo].[ProjeSahiplik] ";
 
-            if (o.ApproveDate != Convert.ToDateTime("1.01.0001 00:00:00"))
-            {
-                set = " SET Path = @Path , ProjeId = @ProjeId , StajyerId = @StajyerId, ApproveDate  =  @ApproveDate, EndDate = @EndDate , Active = @Active , InsDate = @InsDate ";
-            }
-            else
-            {
-                set = " SET Path = @Path , ProjeId = @ProjeId , StajyerId = @StajyerId, EndDate = @EndDate , Active = @Active , InsDate = @InsDate ";
-            }
+            set = "SET [ProjeId] = @ProjeId " +
+                       ",[StajyerId] = @StajyerId " +
+                       ",[InsDate] =@InsDate " +
+                        ",[EndDate] =@EndDate" +
+                       ",[ApproveDate] = @ApproveDate " +
+                       ",[Path] =@Path " +
+                       ",[Versiyon] =@Versiyon " +
+                       ",[Active] =@Active ";
 
-             
+
+
             string where = " WHERE [Id] = @Id ";
             string query = update + set + where;
 
@@ -78,12 +79,16 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
         {
             AddParameter(cmd, "@ProjeId", o.ProjeId);
             AddParameter(cmd, "@StajyerId", o.StajyerId);
-            AddParameter(cmd, "@Path", o.Path);
-            AddParameter(cmd, "@Active", o.Active);
-            AddParameter(cmd, "@EndDate", o.EndDate);
-            if(o.ApproveDate!= Convert.ToDateTime("1.01.0001 00:00:00"))
-            AddParameter(cmd, "@ApproveDate", o.ApproveDate);
             AddParameter(cmd, "@InsDate", o.InsDate);
+            AddParameter(cmd, "@EndDate", o.EndDate);
+            AddParameter(cmd, "@Path", o.Path);
+            AddParameter(cmd, "@Versiyon", o.Versiyon);
+            AddParameter(cmd, "@Active", o.Active);
+
+            //if (o.ApproveDate == Convert.ToDateTime("1.01.0001 00:00:00"))
+            //    AddParameter(cmd, "@ApproveDate", Convert.ToDateTime("1900/01/01"));
+            //else
+            AddParameter(cmd, "@ApproveDate", o.ApproveDate);
         }
 
         protected override bool IsSaved(ProjeSahiplik o)
@@ -99,9 +104,10 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
             entity.ProjeId = (int)MapValue(dr, "ProjeId");
             entity.StajyerId = (int)MapValue(dr, "StajyerId");
             entity.Active = (bool)MapValue(dr, "Active");
+            entity.InsDate = (DateTime)MapValue(dr, "InsDate");
             entity.EndDate = (DateTime)MapValue(dr, "EndDate");
             entity.ApproveDate = Convert.ToDateTime(MapValue(dr, "ApproveDate"));
-            entity.InsDate = (DateTime)MapValue(dr, "InsDate");
+
             return entity;
         }
 
@@ -109,15 +115,16 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO.Base
         {
             ProjeSahiplik entity = new ProjeSahiplik();
             entity.Id = (int)MapValue(dr, "Id");
-            entity.Adi = (string)MapValue(dr, "Adi");
+            entity.ProjeAdi = (string)MapValue(dr, "ProjeAdi");
+            entity.StajyerAdi = (string)MapValue(dr, "StajyerAdi");
             entity.Versiyon = (MapValue(dr, "Versiyon") == null ? "<yok>" : (string)MapValue(dr, "Versiyon"));
             entity.StajyerId = (int)MapValue(dr, "StajyerId");
-            entity.Stajyer = (string)MapValue(dr, "Stajyer");
             entity.ProjeId = (int)MapValue(dr, "ProjeId");
             entity.Active = (bool)MapValue(dr, "Active");
+            entity.InsDate = (DateTime)MapValue(dr, "InsDate");
             entity.EndDate = (DateTime)MapValue(dr, "EndDate");
             entity.ApproveDate = Convert.ToDateTime(MapValue(dr, "ApproveDate"));
-            entity.InsDate = (DateTime)MapValue(dr, "InsDate");
+            entity.Path = (MapValue(dr, "Path") == null ? "<yok>" : (string)MapValue(dr, "Path"));
             return entity;
         }
     }

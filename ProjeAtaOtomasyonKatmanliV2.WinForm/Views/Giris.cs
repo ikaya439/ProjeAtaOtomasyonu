@@ -117,9 +117,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess
                             EntityToScreen(null);
                             girisAlaninaDon();
                         }
-                        catch (Exception)
+                        catch (Exception e1)
                         {
-                            MessageBox.Show("Başarısız");
+                            MessageBox.Show(e1.ToString());
                         }
                     }
                     else MessageBox.Show("Kullanıcı mevcut");
@@ -139,7 +139,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess
                 if (!string.IsNullOrWhiteSpace(txtEmail.Text) && !string.IsNullOrWhiteSpace(txtSifre.Text))
                 {
                     ScreenToEntity();
-                    Kullanici exist = new KullaniciDAO().SelectOneUserByEmailAndPhone(Entity);
+                    Kullanici exist = new KullaniciDAO().SelectOneUserByEmailAndPassword(Entity);
                     if (exist != null)
                     {
                         EntityToScreen(null);
@@ -161,6 +161,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess
                             stj.Show();
                         }
                     }
+                    else
+                        MessageBox.Show("Kullanıcı adı veya şifre yanlış");
+
                 }
                 else
                 {

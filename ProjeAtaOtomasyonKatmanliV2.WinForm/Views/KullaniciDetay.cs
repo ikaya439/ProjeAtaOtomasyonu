@@ -73,9 +73,8 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                 ProjeGrid.Columns["ProjeId"].Visible = false;
                 ProjeGrid.Columns["StajyerId"].Visible = false;
                 ProjeGrid.Columns["Path"].Visible = false;
-                ProjeGrid.Columns["Active"].Visible = false;
-                ProjeGrid.Columns["Konu"].Visible = false;
-                ProjeGrid.Columns["Stajyer"].Visible = false;
+                ProjeGrid.Columns["Active"].Visible = false; 
+                ProjeGrid.Columns["StajyerAdi"].Visible = false;
                 ProjeGrid.Columns["InsDate"].HeaderText = "BaşlamaTarihi";
                 ProjeGrid.Columns["EndDate"].HeaderText = "BitişTarihi";
                 ProjeGrid.Columns["ApproveDate"].HeaderText = "OnaylanmaTarihi";
@@ -86,15 +85,17 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                 }
                 projeGridbuttonEkle();
             }
-            catch (Exception)
-            { }
+            catch (Exception e1)
+            {
+                MessageBox.Show(e1.ToString());
+            }
 
         }
         private void versiyonGridDoldur(List<ProjeVersiyonlari> pS)
         {
             versiyonGrid.Columns.Clear();
             versiyonGrid.DataSource = pS;
-            //  versiyonGrid.Columns["Id"].Visible = false;
+            versiyonGrid.Columns["Id"].Visible = false;
             versiyonGrid.Columns["ProjeSahiplikId"].Visible = false;
             versiyonGrid.Columns["Path"].Visible = false;
             versiyonGrid.Columns["Active"].Visible = false;
@@ -121,9 +122,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
             pSEntity.Id = (int)row.Cells["Id"].Value;
             pSEntity = new ProjeSahiplikDAO().SelectById(pSEntity.Id);
             pSEntity.Versiyon = row.Cells["Versiyon"].Value.ToString();
-            pSEntity.Adi = row.Cells["Adi"].Value.ToString();
+            pSEntity.ProjeAdi = row.Cells["ProjeAdi"].Value.ToString();
             versiyonEntity.ProjeSahiplikId = (int)row.Cells["Id"].Value;
-            versiyonEntity.ProjeAdi = row.Cells["Adi"].Value.ToString();
+            versiyonEntity.ProjeAdi = row.Cells["ProjeAdi"].Value.ToString();
             versiyonEntity.Versiyon = row.Cells["Versiyon"].Value.ToString();
             if (versiyonEntity.Versiyon != "<yok>")
                 versiyonEntity = new ProjeVersiyonlariDAO().SelectOneByOwnerIdAndVersion(versiyonEntity);
@@ -171,7 +172,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
             try
             {
                 versiyonGridToEntity();
-                pSEntity.Adi = versiyonEntity.ProjeAdi;
+                pSEntity.ProjeAdi = versiyonEntity.ProjeAdi;
                 new FileOperations().openProject(pSEntity, true);
             }
             catch (Exception) { }
@@ -198,7 +199,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                 if (currentMouseOverRow >= 0)
                 {
                     ProjeGrid.ClearSelection();
-                    var hti = ProjeGrid.HitTest(e.X, e.Y);  
+                    var hti = ProjeGrid.HitTest(e.X, e.Y);
                     ProjeGrid.Rows[hti.RowIndex].Selected = true;
                     ContextMenuStrip ctxMenu = new ContextMenuStrip();
                     ToolStripMenuItem Uzat = new ToolStripMenuItem("Uzat");
@@ -228,8 +229,6 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
         private void Bitir_Click(object sender, EventArgs e)
         {
             projeGridToEntity();
-            if (pSEntity.ApproveDate == Convert.ToDateTime("1.01.0001 00:00:00"))
-            {
                 DialogResult result = MessageBox.Show("Bitirmek istiyormusunuz ?",
                 "Önemli Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -242,14 +241,12 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                     }
                     catch (Exception) { }
                 }
-            }
         }
 
         private void Uzat_Click(object sender, EventArgs e)
         {
             projeGridToEntity();
-            if (pSEntity.ApproveDate == Convert.ToDateTime("1.01.0001 00:00:00"))
-            {
+
                 try
                 {
                     Calendar c = new Calendar();
@@ -262,8 +259,6 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                     projeGridDoldur();
                 }
                 catch (Exception) { }
-            }
-
 
         }
     }

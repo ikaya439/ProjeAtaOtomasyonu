@@ -9,8 +9,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess
     {
         public static readonly DbProviderType DatabaseProviderType = DbProviderType.SQLSERVER;
         public static readonly DbType DatabaseType = DbType.SQLSERVER;
-        public static readonly string ConnectionString = "Data Source=DESKTOP-220KNLO;Initial"+
-            " Catalog=ProjeAtamaOtomasyonu;Integrated Security=True;";
+
+        public static readonly string ConnectionString = @"Data Source=DESKTOP-AD56DF7\SQLEXPRESS;Initial Catalog=ProjeAtamaOtomasyonu;Integrated Security=True;Connect " +
+        "Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         public static System.Data.IDbConnection Connection;
     }
 }

@@ -8,20 +8,12 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.Entities
 {
     public class ProjeSahiplik : Base.ProjeSahiplikBase
     {
-        private string _adi;
+        private string _projeAdi;
 
-        public string Adi
+        public string ProjeAdi
         {
-            get { return _adi; }
-            set { _adi = value; }
-        }
-
-        private string _konu;
-
-        public string Konu
-        {
-            get { return _konu; }
-            set { _konu = value; }
+            get { return _projeAdi; }
+            set { _projeAdi = value; }
         }
 
         private string _versiyon;
@@ -32,12 +24,12 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.Entities
             set { _versiyon = value; }
         }
 
-        private string _stajyer;
+        private string _stajyerAdi;
 
-        public string Stajyer
+        public string StajyerAdi
         {
-            get { return _stajyer; }
-            set { _stajyer = value; }
+            get { return _stajyerAdi; }
+            set { _stajyerAdi = value; }
         }
     }
 }

@@ -13,85 +13,109 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Controllers
 {
     class FileOperations
     {
+
         public bool updateProject(ProjeSahiplik pSEntity)
         {
-            //try
-            //{
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            DialogResult result = new DialogResult();
             string path = pSEntity.Path;
-            bool check = Directory.Exists(path);
-            if (Directory.Exists(path) == false)
+
+            if (!Directory.Exists(path))
             {
-                if (!string.IsNullOrWhiteSpace(path))
-                    MessageBox.Show("Tanimlı yol Bulunamadı");
-                result = fbd.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    pSEntity.Path = fbd.SelectedPath;
-                    path = pSEntity.Path;
-                    new ProjeSahiplikDAO().Save(pSEntity);
-                }
-                else { return false; }
+                MessageBox.Show("File can't find");
+                return false;
             }
-            Proje pEntity = new ProjeDAO().SelectById(pSEntity.ProjeId);
-            string versiyonNumber = versiyonNumarasiArttir(pSEntity.Versiyon);
-            string destDirName = @"..\..\Projeler\" + pSEntity.StajyerId + "\\" + pEntity.Adi + "\\" + versiyonNumber;
-            DirectoryCopy(path, destDirName, true);
-            ProjeVersiyonlari pVEntity = new ProjeVersiyonlari();
-            pVEntity.Versiyon = versiyonNumber;
-            pVEntity.InsDate = DateTime.Now;
-            pVEntity.Active = true;
-            pVEntity.ProjeSahiplikId = pSEntity.Id;
-            pVEntity.Path = destDirName;
-            new ProjeVersiyonlariDAO().Save(pVEntity);
+
+            try
+            {
+                //find project
+                Proje pEntity = new ProjeDAO().SelectById(pSEntity.ProjeId);
+
+                //increase version number
+                string versiyonNumber = versiyonNumarasiArttir(pSEntity.Versiyon);
+                string destDirName = @"..\..\Projeler\" + pSEntity.StajyerId + "\\"
+                    + pEntity.Adi + "\\" + versiyonNumber;
+
+                DirectoryCopy(path, destDirName, true);
+
+                ProjeVersiyonlari pVEntity = new ProjeVersiyonlari();
+
+                pVEntity.Versiyon = versiyonNumber;
+                pVEntity.InsDate = DateTime.Now;
+                pVEntity.Active = true;
+                pVEntity.ProjeSahiplikId = pSEntity.Id;
+                pVEntity.Path = destDirName;
+
+                new ProjeVersiyonlariDAO().Save(pVEntity);
+
+                pSEntity.Versiyon = versiyonNumber;
+
+                new ProjeSahiplikDAO().Save(pSEntity);
+            }
+            catch
+            {
+                return false;
+            }
+
+
             return true;
+        }
+
+
+        private void savePath()
+        {
+
         }
 
         public void openProject(ProjeSahiplik pSEntity, bool adminStajyer)
         {
+            string path = pSEntity.Path + "\\" + pSEntity.ProjeAdi + ".sln";
+            FolderBrowserDialog fbd = null;
+            DialogResult result;
+            Process p;
             if (adminStajyer)
             {
                 string adminPath = pSEntity.Path;
                 try
                 {
-                    adminPath += "\\" + pSEntity.Adi + ".sln";
-                    Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo(adminPath);
-                    p.Start();
-                  
-                    return;
-                }
-                catch (Exception)
-                {
-                }
-
-            }
-            else
-            {
-                string path = pSEntity.Path + "\\" + pSEntity.Adi + ".sln";
-                if (!File.Exists(path))
-                {
-                    MessageBox.Show("Yol bulunamadı yeni yol tanımlayın");
-                    FolderBrowserDialog fbd = new FolderBrowserDialog();
-                    DialogResult result = fbd.ShowDialog();
-                    if (result == DialogResult.OK)
+                    if (File.Exists(path))
                     {
-                        pSEntity.Path = fbd.SelectedPath;
-                        path = pSEntity.Path + "\\" + pSEntity.Adi + ".sln";
-                        new ProjeSahiplikDAO().Save(pSEntity);
+                        adminPath += "\\" + pSEntity.ProjeAdi + ".sln";
+                        p = new Process();
+                        p.StartInfo = new ProcessStartInfo(adminPath);
+                        p.Start();
                     }
                     else
                     {
-                        return;
+                        MessageBox.Show("Intern does not upload any project!");
                     }
+                    return;
                 }
-                Process p = new Process();
-                p.StartInfo = new ProcessStartInfo(path);
-                p.Start();
+                catch
+                {
+                    MessageBox.Show("File Deleted or wrong Location!");
+                }
             }
-        }
+            else
+            {
+                while (!File.Exists(path))
+                {
+                    MessageBox.Show("Yol bulunamadı yeni yol tanımlayın");
+                    fbd = new FolderBrowserDialog();
+                    result = fbd.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        pSEntity.Path = fbd.SelectedPath;
+                        path = pSEntity.Path + "\\" + pSEntity.ProjeAdi + ".sln";
+                    }
+                    else
+                        return;
+                }
 
+                new ProjeSahiplikDAO().Save(pSEntity);
+            }
+            p = new Process();
+            p.StartInfo = new ProcessStartInfo(path);
+            p.Start();
+        }
 
         private string versiyonNumarasiArttir(string versiyon)
         {

@@ -24,35 +24,35 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
         public List<ProjeSahiplik> getAllProjectsForSelectedIntern(Kullanici Entity)
         {
             IDbCommand cmd;
-            string query = "";
-            string select = "select pKS.Id, pKS.ProjeAdi as [Adi],pKS.ProjeId,pKS.StajyerId ,pKS.StajyerAdi as [Stajyer] ,"
-                + "MAX(pV.Versiyon) as [Versiyon],pKS.Active,pKS.EndDate,pKS.ApproveDate,pKS.InsDate ";
-            string from = " from (select pS.* , p.Adi as[ProjeAdi], k.Adi as [StajyerAdi] from Kullanici k join ProjeSahiplik pS on k.Id = pS.StajyerId " +
-                            "join Proje p on pS.ProjeId = p.Id ) as pKS left join ProjeVersiyonlari pV on pKS.Id = pV.ProjeSahiplikId  ";
-            string where = " where pKS.Active = 1 and  pKS.StajyerId=@StajyerId";
-            string groupBy = " group by pKS.Id,pKS.ApproveDate,pKS.InsDate,pKS.EndDate,pKS.ProjeAdi,pKS.StajyerAdi,pKS.ProjeId,pKS.StajyerId,pKS.Active";
+            // string query = "";
+            string query =
+               "Select pS.Id as [Id], p.Adi as [ProjeAdi], k.Adi as [StajyerAdi], pS.Versiyon as [Versiyon], k.Id as [StajyerId]," +
+               " p.Id as [ProjeId], pS.Active,pS.InsDate, pS.EndDate, pS.ApproveDate, pS.Path " +
+               " from dbo.Kullanici k " +
+                "inner join dbo.ProjeSahiplik pS on pS.StajyerId = k.Id " +
+                "inner join dbo.Proje p on p.Id = pS.ProjeId " +
 
-            query += select + from + where + groupBy;
+                "where k.Id = @Id and pS.Active = 1";
+
+
             cmd = this.CreateCommand(query);
-            AddParameter(cmd, "@StajyerId", Entity.Id);
-            AddParameter(cmd, "@Active", true);
-            return SelectCompact(cmd).ToList();
+            AddParameter(cmd, "@Id", Entity.Id);
+            var a = SelectCompact(cmd).ToList();
+            return a;
         }
 
         public List<ProjeSahiplik> getAllInternsProjects()
         {
             IDbCommand cmd;
-            string query = "";
-            string select = "select pKS.Id, pKS.ProjeAdi as [Adi],pKS.ProjeId,pKS.StajyerId ,pKS.StajyerAdi as [Stajyer] ,"
-                + "MAX(pV.Versiyon) as [Versiyon],pKS.Active,pKS.EndDate,pKS.ApproveDate,pKS.InsDate ";
-            string from = " from (select pS.* , p.Adi as[ProjeAdi], k.Adi as [StajyerAdi] from Kullanici k join ProjeSahiplik pS on k.Id = pS.StajyerId " +
-                            "join Proje p on pS.ProjeId = p.Id ) as pKS left join ProjeVersiyonlari pV on pKS.Id = pV.ProjeSahiplikId  ";
-            string where = " where pKS.Active = 1 ";
-            string groupBy = " group by pKS.Id,pKS.ApproveDate,pKS.InsDate,pKS.EndDate,pKS.ProjeAdi,pKS.StajyerAdi,pKS.ProjeId,pKS.StajyerId,pKS.Active";
+            string query =
+                "Select pS.Id as [Id], p.Adi as [ProjeAdi], k.Adi as [StajyerAdi], pS.Versiyon as [Versiyon], k.Id as [StajyerId]," +
+                " p.Id as [ProjeId], pS.Active,pS.InsDate, pS.EndDate, pS.ApproveDate, pS.Path " +
+                " from dbo.Kullanici k " +
+                 "inner join dbo.ProjeSahiplik pS on pS.StajyerId = k.Id " +
+                 "inner join dbo.Proje p on p.Id = pS.ProjeId " +
 
-            query += select + from + where + groupBy;
+                 "where pS.Active = 1";
             cmd = this.CreateCommand(query);
-            AddParameter(cmd, "@Active", true);
             return SelectCompact(cmd).ToList();
         }
 
@@ -63,7 +63,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
 
             string query = "";
             string select = "select pKS.Id, pKS.ProjeAdi as [Adi],pKS.ProjeId,pKS.StajyerId ,pKS.StajyerAdi as [Stajyer] ,"
-                + "MAX(pV.Versiyon) as [Versiyon],pKS.Active,pKS.EndDate,pKS.ApproveDate,pKS.InsDate ";
+                + "MAX(pV.Versiyon) as [Versiyon],pKS.Active,pKS.InsDate,pKS.EndDate,pKS.ApproveDate ";
             string from = " from (select pS.* , p.Adi as[ProjeAdi], k.Adi as [StajyerAdi] from Kullanici k join ProjeSahiplik pS on k.Id = pS.StajyerId " +
                             "join Proje p on pS.ProjeId = p.Id ) as pKS left join ProjeVersiyonlari pV on pKS.Id = pV.ProjeSahiplikId  ";
             string where = " where pKS.Active = 1 ";
@@ -105,24 +105,34 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
         {
 
             IDbCommand cmd = this.CreateCommand("");
-            string whereEkle = "";
-            string select = "SELECT DISTINCT pS.Id,pS.ProjeId,p.Adi,max(pV.Versiyon) as [Versiyon] , k.Adi + ' ' + k.SoyAdi as [Stajyer],k.Id " +
-                   "as [StajyerId],pS.Active,pS.EndDate,pS.ApproveDate,pS.InsDate ";
-            string from = " from ProjeSahiplik pS left outer join ProjeVersiyonlari pV on pS.Id = pV.ProjeSahiplikId " +
-                   " join Proje p on pS.ProjeId = p.Id join Kullanici k on pS.StajyerId = k.Id";
-            string where = " where pS.Active = 1 ";
-            string groupBy = " group by pS.ProjeId, p.Adi, k.Adi + ' ' + k.SoyAdi, k.Id,pS.Active,pS.EndDate,pS.ApproveDate, pS.InsDate ,pS.Id order by Versiyon desc";
 
+
+            string whereEkle = "";
+            string where = "";
             whereEkle += checkSelectedDates(beginInsDatePicker, beginEndDatePicker, beginApproveDatePicker,
-             finishInsDatePicker, finishEndDatePicker, finishApproveDatePicker, cmd, pSBegin, pSEnd);
+              finishInsDatePicker, finishEndDatePicker, finishApproveDatePicker, cmd, pSBegin, pSEnd);
             whereEkle += checkSelectedStates(selectedState, cmd, pSBegin, pSEnd);
             whereEkle += getFromTxtField(cmd, pEntity, kEntity);
             where += whereEkle;
 
 
 
-            string query = select + from + where + groupBy;
+            string query = "";
+
+            query = "Select pS.Id as [Id], p.Adi as [ProjeAdi], k.Adi as [StajyerAdi], pS.Versiyon as [Versiyon], k.Id as [StajyerId]," +
+           " p.Id as [ProjeId], pS.Active,pS.InsDate, pS.EndDate, pS.ApproveDate, pS.Path " +
+           " from dbo.Kullanici k " +
+            "inner join dbo.ProjeSahiplik pS on pS.StajyerId = k.Id " +
+            "inner join dbo.Proje p on p.Id = pS.ProjeId ";
+
+
+            query += where;
+
+
+
+
             cmd.CommandText = query;
+
             return SelectCompact(cmd).ToList();
         }
 

@@ -54,7 +54,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                 projeGrid.DataSource = new ProjeSahiplikDAO().getAllInternsProjects();
                 gridInit();
             }
-            catch (Exception)
+            catch (Exception e1)
             {
             }
         }
@@ -76,8 +76,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
         {
             projeGrid.Columns["Id"].Visible = false;
             projeGrid.Columns["Active"].Visible = false;
-            projeGrid.Columns["Konu"].Visible = false;
             projeGrid.Columns["Path"].Visible = false;
+            projeGrid.Columns["StajyerId"].Visible = false;
+            projeGrid.Columns["ProjeId"].Visible = false;
             projeGrid.Columns["InsDate"].HeaderText = "BaşlamaTarihi";
             projeGrid.Columns["EndDate"].HeaderText = "BitişTarihi";
             projeGrid.Columns["ApproveDate"].HeaderText = "OnaylanmaTarihi";

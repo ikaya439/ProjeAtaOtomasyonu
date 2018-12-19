@@ -55,14 +55,12 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
             {
                 projeGrid.Columns.Clear();
                 List<ProjeSahiplik> ps = new ProjeSahiplikDAO().getAllProjectsForSelectedIntern(Entity);
-                ps= ps.Where(w => w.ApproveDate <= Convert.ToDateTime("2000-01-01 00:00:00.000")).ToList();
                 projeGrid.DataSource = ps;
 
                 projeGrid.Columns["Id"].Visible = false;
-                projeGrid.Columns["Konu"].Visible = false;
                 projeGrid.Columns["StajyerId"].Visible = false;
                 projeGrid.Columns["Path"].Visible = false;
-                projeGrid.Columns["Stajyer"].Visible = false;
+                projeGrid.Columns["StajyerAdi"].Visible = false;
                 projeGrid.Columns["ProjeId"].Visible = false;
                 projeGrid.Columns["Active"].Visible = false;
                 for (int i = 0; i < projeGrid.ColumnCount; i++)
@@ -98,7 +96,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
                 new FileOperations().openProject(pSEntity, false);
                 gridDoldur();
             }
-            catch (Exception) { }
+            catch (Exception e1) { }
         }
 
         private void guncelle()
@@ -115,7 +113,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.WinForm.Views
             pSEntity.Id = (int)projeGrid.CurrentRow.Cells["Id"].Value;
             pSEntity = new ProjeSahiplikDAO().SelectById(pSEntity.Id);
             pSEntity.Versiyon = projeGrid.CurrentRow.Cells["Versiyon"].Value.ToString();
-            pSEntity.Adi = projeGrid.CurrentRow.Cells["Adi"].Value.ToString();
+            pSEntity.ProjeAdi = projeGrid.CurrentRow.Cells["ProjeAdi"].Value.ToString();
         }
     }
 }

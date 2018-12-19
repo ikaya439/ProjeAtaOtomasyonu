@@ -21,6 +21,15 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
             AddParameter(cmd, "@Tel", entity.Tel);
             return SelectOne(cmd);
         }
+
+        public Kullanici SelectOneUserByEmailAndPassword(Kullanici entity)
+        {
+            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE Active = 1 and ([Email]= @Email and [Sifre]=@Sifre)");
+            AddParameter(cmd, "@Email", entity.Email);
+            AddParameter(cmd, "@Sifre", entity.Sifre);
+            return SelectOne(cmd);
+        }
+
         public List<Kullanici> SelectAllUserByCalisanStajyerState(bool calisanStajyer)
         {
             IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [AdminStajyer] = @AdminStajyer and [Active] = @Active");
@@ -30,9 +39,9 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
         }
         public List<Kullanici> SearchInUsers(Kullanici entity)
         {
-            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [Email] like "+
+            IDbCommand cmd = this.CreateCommand("SELECT * FROM [Kullanici] WHERE [Email] like " +
                 "'%'+@Email+'%' and [Tel] like '%'+@Tel+'%'" +
-                " and [Adi] like '%'+@Adi+'%' and [SoyAdi] like "+
+                " and [Adi] like '%'+@Adi+'%' and [SoyAdi] like " +
                 "'%'+@SoyAdi+'%' and [Active]=@Active and [AdminStajyer]=@AdminStajyer");
             AddParameter(cmd, "@Adi", entity.Adi);
             AddParameter(cmd, "@SoyAdi", entity.SoyAdi);
@@ -64,7 +73,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
             AddParameter(cmd, "@Active", true);
             AddParameter(cmd, "@Email", Entity.Email);
             AddParameter(cmd, "@Tel", Entity.Tel);
-
+   
             Kullanici pAra = SelectOne(cmd);
             if (pAra != null)
                 return true;
@@ -73,8 +82,10 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
         }
         public List<Kullanici> getAllInternWithoutAssignmentForSelectedProject(Proje projeEntity)
         {
-            IDbCommand cmd = this.CreateCommand("select k.*,kPS.ProjeId from ( select k.Id,pS.ProjeId from Kullanici k left join ProjeSahiplik pS " +
-                "on k.Id = pS.StajyerId where pS.ProjeId  = @ProjeId ) as kPS right join Kullanici k on kPS.Id = k.Id where  (kPS.Id is null or k.Id is null)" +
+            IDbCommand cmd = this.CreateCommand("select k.*,kPS.ProjeId from " +
+                "( select k.Id,pS.ProjeId from Kullanici k left join ProjeSahiplik pS " +
+                "on k.Id = pS.StajyerId where pS.ProjeId  = @ProjeId ) as kPS right join " +
+                "Kullanici k on kPS.Id = k.Id where  (kPS.Id is null or k.Id is null)" +
                 "and k.AdminStajyer=0 and k.Active=1");
             AddParameter(cmd, "@ProjeId", projeEntity.Id);
             return SelectCompact(cmd).ToList();
@@ -83,7 +94,7 @@ namespace ProjeAtaOtomasyonKatmanliV2.DataAccess.DAO
         {
             IDbCommand cmd = this.CreateCommand("select k.*,kPS.ProjeId from ( select k.Id,pS.ProjeId from Kullanici k left join ProjeSahiplik pS " +
                 "on k.Id = pS.StajyerId where pS.ProjeId  = @ProjeId ) as kPS right join Kullanici k on kPS.Id = k.Id where  (kPS.Id is null or k.Id is null)" +
-                "and k.AdminStajyer=0 and k.Active=1 and  k.Adi LIKE '%'+@Adi+'%' and k.SoyAdi LIKE '%'+@SoyAdi+'%' "+
+                "and k.AdminStajyer=0 and k.Active=1 and  k.Adi LIKE '%'+@Adi+'%' and k.SoyAdi LIKE '%'+@SoyAdi+'%' " +
                 "and k.Email LIKE '%'+@Email+'%' and k.Tel LIKE '%'+@Tel+'%'");
             AddParameter(cmd, "@ProjeId", projeEntity.Id);
             AddParameter(cmd, "@Adi", kullaniciEntity.Adi);
